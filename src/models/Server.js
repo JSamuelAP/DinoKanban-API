@@ -24,6 +24,10 @@ class Server {
 			boards: "/api/v1/boards",
 			cards: "/api/v1/cards",
 		};
+		this.allowedDomains = [
+			process.env.FRONTEND_DEV_URL,
+			process.env.FRONTEND_PROD_URL,
+		];
 
 		this.connectDB();
 		this.setMiddlewares();
@@ -35,7 +39,15 @@ class Server {
 	}
 
 	setMiddlewares() {
-		this.app.use(cors({ credentials: true }));
+		this.app.use(
+			cors({
+				origin: function (origin, callback) {
+					if (this.allowedDomains.indexOf(origin) !== -1) callback(null, true);
+					else callback(new Error("Not allowed by CORS"));
+				},
+				credentials: true,
+			})
+		);
 		this.app.use(express.json());
 		this.app.use(cookieParser());
 		this.app.use(express.static("public"));
