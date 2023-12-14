@@ -1,6 +1,11 @@
 import { Router } from "express";
 
-import { login, signup, refreshToken } from "../controllers/auth.controller.js";
+import {
+	login,
+	signup,
+	refreshToken,
+	logout,
+} from "../controllers/auth.controller.js";
 import { validateFields } from "../middlewares/validateFields.js";
 import { body } from "express-validator";
 import {
@@ -69,6 +74,6 @@ router.get("/protected", validateToken, (req, res) =>
 
 router.get("/refresh-token", validateRefreshToken, refreshToken);
 
-router.delete("/logout");
+router.delete("/logout", logout);
 
 export default router;

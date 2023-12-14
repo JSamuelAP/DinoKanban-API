@@ -68,6 +68,11 @@ const login = async (email, password) => {
 	}
 };
 
+/**
+ * Generate new access token
+ * @param {String} uid User ID
+ * @returns Response object with access token or error
+ */
 const refreshToken = async (uid) => {
 	try {
 		const { token, expiresIn } = generateAccessToken(uid);

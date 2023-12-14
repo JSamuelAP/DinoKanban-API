@@ -40,4 +40,9 @@ const refreshToken = async (req, res) => {
 	}
 };
 
-export { login, signup, refreshToken };
+const logout = (req, res) => {
+	res.clearCookie("refresh-token");
+	res.sendStatus(200);
+};
+
+export { login, signup, refreshToken, logout };
