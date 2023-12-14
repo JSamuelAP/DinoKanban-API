@@ -1,8 +1,12 @@
 import { Router } from "express";
 
-import { login, signup } from "../controllers/auth.controller.js";
+import { login, signup, refreshToken } from "../controllers/auth.controller.js";
 import { validateFields } from "../middlewares/validateFields.js";
 import { body } from "express-validator";
+import {
+	validateRefreshToken,
+	validateToken,
+} from "../middlewares/validateToken.js";
 
 const router = Router();
 
@@ -59,7 +63,11 @@ router.post(
 	login
 );
 
-router.post("/refresh-token");
+router.get("/protected", validateToken, (req, res) =>
+	res.json({ protected: true })
+);
+
+router.get("/refresh-token", validateRefreshToken, refreshToken);
 
 router.delete("/logout");
 

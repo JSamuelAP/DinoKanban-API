@@ -1,5 +1,9 @@
 import User from "../models/User.js";
 import { formatResponse } from "../helpers/formatResponse.js";
+import {
+	generateAccessToken,
+	generateRefreshToken,
+} from "../helpers/generateTokens.js";
 
 /**
  * Register a new user in database
@@ -46,14 +50,35 @@ const login = async (email, password) => {
 			);
 		if (!user) throw formatResponse(404, "Invalid email or password");
 
-		if (await user.comparePasswords(password))
-			return formatResponse(200, "User logged successfully", user);
-		// TODO: generate JWT
-		else throw formatResponse(404, "Invalid email or password");
+		if (await user.comparePasswords(password)) {
+			const { token, expiresIn } = generateAccessToken(user._id);
+			const { token: refreshToken, expiresIn: refreshExpiresIn } =
+				generateRefreshToken(user._id);
+			return formatResponse(200, "User logged successfully", {
+				user,
+				token,
+				refreshToken,
+				refreshExpiresIn,
+				expiresIn,
+			});
+		} else throw formatResponse(404, "Invalid email or password");
 	} catch (error) {
 		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
 
-export default { signup, login };
+const refreshToken = async (uid) => {
+	try {
+		const { token, expiresIn } = generateAccessToken(uid);
+		return formatResponse(200, "Access token generated successfully", {
+			token,
+			expiresIn,
+		});
+	} catch (error) {
+		console.log(error);
+		throw formatResponse(error?.status_code || 500, error?.message);
+	}
+};
+
+export default { signup, login, refreshToken };

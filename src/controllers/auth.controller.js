@@ -16,10 +16,28 @@ const login = async (req, res) => {
 
 	try {
 		const response = await authService.login(email, password);
+		res.cookie("refresh-token", response.data.refreshToken, {
+			httpOnly: true,
+			secure: process.env.MODE === "production",
+			expires: new Date(Date.now() + response.data.refreshExpiresIn * 1000),
+		});
+		delete response.data.refreshToken;
+		delete response.data.refreshExpiresIn;
 		res.status(response.status_code).json(response);
 	} catch (error) {
 		res.status(error.status_code).json(error);
 	}
 };
 
-export { login, signup };
+const refreshToken = async (req, res) => {
+	const uid = req.uid;
+
+	try {
+		const response = await authService.refreshToken(uid);
+		res.status(response.status_code).json(response);
+	} catch (error) {
+		res.status(error.status_code).json(error);
+	}
+};
+
+export { login, signup, refreshToken };
