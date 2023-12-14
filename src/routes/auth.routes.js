@@ -10,8 +10,8 @@ import { validateFields } from "../middlewares/validateFields.js";
 import { body } from "express-validator";
 import {
 	validateRefreshToken,
-	validateToken,
-} from "../middlewares/validateToken.js";
+	validateAccessToken,
+} from "../middlewares/validateTokens.js";
 
 const router = Router();
 
@@ -68,7 +68,7 @@ router.post(
 	login
 );
 
-router.get("/protected", validateToken, (req, res) =>
+router.get("/protected", validateAccessToken, (req, res) =>
 	res.json({ protected: true })
 );
 

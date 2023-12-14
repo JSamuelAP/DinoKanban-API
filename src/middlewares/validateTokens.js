@@ -11,7 +11,7 @@ const tokenVerificationErrors = {
 	"No Bearer": "Invalid authorization type, please use Bearer",
 };
 
-const validateToken = async (req, res, next) => {
+const validateAccessToken = async (req, res, next) => {
 	const token = req.headers?.authorization || "";
 
 	try {
@@ -75,4 +75,4 @@ const validateRefreshToken = async (req, res, next) => {
 	}
 };
 
-export { validateToken, validateRefreshToken };
+export { validateAccessToken, validateRefreshToken };
