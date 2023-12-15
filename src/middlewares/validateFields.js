@@ -1,4 +1,4 @@
-import { validationResult, body } from "express-validator";
+import { validationResult, body, param } from "express-validator";
 
 /**
  * Validate if express-validator found errors
@@ -63,4 +63,37 @@ const validateLoginBody = [
 	validateFields,
 ];
 
-export { validateSignupBody, validateLoginBody };
+const validateCreateBoardBody = [
+	body("name", "Key 'name' is missing or is empty")
+		.trim()
+		.notEmpty()
+		.bail()
+		.isLength({ max: 32 })
+		.withMessage("Max length for key 'name' is 32 characters"),
+	validateFields,
+];
+
+const validateGetBoardId = [
+	param("id", "Invalid param 'id'").isMongoId(),
+	validateFields,
+];
+
+const validateUpdateBoard = [
+	param("id", "Invalid param 'id'").isMongoId(),
+	body("name", "Key 'name' is missing or is empty")
+		.optional()
+		.trim()
+		.notEmpty()
+		.bail()
+		.isLength({ max: 32 })
+		.withMessage("Max length for key 'name' is 32 characters"),
+	validateFields,
+];
+
+export {
+	validateSignupBody,
+	validateLoginBody,
+	validateCreateBoardBody,
+	validateGetBoardId,
+	validateUpdateBoard,
+};
