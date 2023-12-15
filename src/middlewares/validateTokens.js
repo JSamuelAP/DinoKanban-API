@@ -23,7 +23,6 @@ const validateAccessToken = async (req, res, next) => {
 			token.split(" ")[1],
 			process.env.JWT_ACCESS_SECRET,
 			(err, decoded) => {
-				console.log(decoded);
 				if (err)
 					throw formatResponse(401, tokenVerificationErrors[err?.message]);
 				else return decoded;
