@@ -1,4 +1,5 @@
 import Board from "../models/Board.js";
+import Card from "../models/Cards.js";
 import { formatResponse } from "../helpers/formatResponse.js";
 
 /**
@@ -93,6 +94,10 @@ const deleteBoard = async (uid, id) => {
 			{ new: true }
 		);
 		if (!board) throw formatResponse(404, "Board not found");
+
+		// Soft delete for cards
+		await Card.updateMany({ board: id, deleted: false }, { deleted: true });
+
 		return formatResponse(200, "Board deleted successfully", { board });
 	} catch (error) {
 		console.log(error);
