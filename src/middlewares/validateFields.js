@@ -90,10 +90,81 @@ const validateUpdateBoard = [
 	validateFields,
 ];
 
+const validateCardId = [
+	param("id", "Invalid param 'id'").isMongoId(),
+	validateFields,
+];
+
+const validateBoardIdBody = [
+	body("board", "Invalid key 'board'").isMongoId(),
+	validateFields,
+];
+
+const validateGetCard = [
+	param("id", "Invalid param 'id'").isMongoId(),
+	body("board", "Invalid key 'board'").isMongoId(),
+	validateFields,
+];
+
+const validateCreateCardBody = [
+	body("title", "Key 'title' is missing or is empty")
+		.trim()
+		.notEmpty()
+		.bail()
+		.isLength({ max: 24 })
+		.withMessage("Max length for key 'title' is 24 characters"),
+	body("description", "Key 'description' is missing or is empty")
+		.optional()
+		.trim()
+		.notEmpty()
+		.bail()
+		.isLength({ max: 200 })
+		.withMessage("Max length for key 'description' is 200 characters"),
+	body("board", "Invalid key 'board'").isMongoId(),
+	body("list", "Key 'list' can only be 'backlog', 'todo', 'doing' or 'done'")
+		.optional()
+		.trim()
+		.toLowerCase()
+		.isIn(["backlog", "todo", "doing", "done"]),
+	validateFields,
+];
+
+const validateUpdateCardBody = [
+	param("id", "Invalid param 'id'").isMongoId(),
+	body("title", "Key 'title' is empty")
+		.optional()
+		.trim()
+		.notEmpty()
+		.bail()
+		.isLength({ max: 24 })
+		.withMessage("Max length for key 'title' is 24 characters"),
+	body("description", "Key 'description' is empty")
+		.optional()
+		.trim()
+		.notEmpty()
+		.bail()
+		.isLength({ max: 200 })
+		.withMessage("Max length for key 'description' is 200 characters"),
+	body("list", "Key 'list' can only be 'backlog', 'todo', 'doing' or 'done'")
+		.optional()
+		.trim()
+		.toLowerCase()
+		.isIn(["backlog", "todo", "doing", "done"]),
+	body("order", "Key 'order' must be a positive integer")
+		.optional()
+		.isInt({ min: 1, allow_leading_zeroes: false }),
+	validateFields,
+];
+
 export {
 	validateSignupBody,
 	validateLoginBody,
 	validateCreateBoardBody,
 	validateGetBoardId,
 	validateUpdateBoard,
+	validateCardId,
+	validateBoardIdBody,
+	validateGetCard,
+	validateCreateCardBody,
+	validateUpdateCardBody,
 };
