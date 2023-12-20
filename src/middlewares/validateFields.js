@@ -18,7 +18,22 @@ const validateFields = (req, res, next) => {
 	next();
 };
 
-const validateSignupBody = [
+/**
+ * Validate if an ID is mongo ID
+ * @param {String} location Location of the key (param or body)
+ * @param {String} key Name of the param or field
+ * @returns {ValidationChain} Validation chain of the ID in params or body
+ */
+const validateID = (location = "param", key = "id") => {
+	if (location === "param")
+		return param("id", "Invalid param 'id'").isMongoId();
+	else if (location === "body")
+		return body(key, `Invalid key '${key}'`).isMongoId();
+};
+
+// Auth
+
+const validateSignup = [
 	body("username", "Key 'username' is missing or is empty")
 		.trim()
 		.notEmpty()
@@ -52,7 +67,7 @@ const validateSignupBody = [
 	validateFields,
 ];
 
-const validateLoginBody = [
+const validateLogin = [
 	body("email", "Key 'email' is missing or is empty")
 		.trim()
 		.notEmpty()
@@ -63,7 +78,11 @@ const validateLoginBody = [
 	validateFields,
 ];
 
-const validateCreateBoardBody = [
+// Boards
+
+const validateBoardID = [validateID(), validateFields];
+
+const validateCreateBoard = [
 	body("name", "Key 'name' is missing or is empty")
 		.trim()
 		.notEmpty()
@@ -73,13 +92,8 @@ const validateCreateBoardBody = [
 	validateFields,
 ];
 
-const validateGetBoardId = [
-	param("id", "Invalid param 'id'").isMongoId(),
-	validateFields,
-];
-
 const validateUpdateBoard = [
-	param("id", "Invalid param 'id'").isMongoId(),
+	validateID(),
 	body("name", "Key 'name' is missing or is empty")
 		.optional()
 		.trim()
@@ -90,23 +104,13 @@ const validateUpdateBoard = [
 	validateFields,
 ];
 
-const validateCardId = [
-	param("id", "Invalid param 'id'").isMongoId(),
-	validateFields,
-];
+// Cards
 
-const validateBoardIdBody = [
-	body("board", "Invalid key 'board'").isMongoId(),
-	validateFields,
-];
+const validateGetCards = [validateID("body", "board"), validateFields];
 
-const validateGetCard = [
-	param("id", "Invalid param 'id'").isMongoId(),
-	body("board", "Invalid key 'board'").isMongoId(),
-	validateFields,
-];
+const validateCardID = [validateID(), validateFields];
 
-const validateCreateCardBody = [
+const validateCreateCard = [
 	body("title", "Key 'title' is missing or is empty")
 		.trim()
 		.notEmpty()
@@ -120,7 +124,7 @@ const validateCreateCardBody = [
 		.bail()
 		.isLength({ max: 200 })
 		.withMessage("Max length for key 'description' is 200 characters"),
-	body("board", "Invalid key 'board'").isMongoId(),
+	validateID("body", "board"),
 	body("list", "Key 'list' can only be 'backlog', 'todo', 'doing' or 'done'")
 		.optional()
 		.trim()
@@ -129,8 +133,8 @@ const validateCreateCardBody = [
 	validateFields,
 ];
 
-const validateUpdateCardBody = [
-	param("id", "Invalid param 'id'").isMongoId(),
+const validateUpdateCard = [
+	validateID(),
 	body("title", "Key 'title' is empty")
 		.optional()
 		.trim()
@@ -157,14 +161,13 @@ const validateUpdateCardBody = [
 ];
 
 export {
-	validateSignupBody,
-	validateLoginBody,
-	validateCreateBoardBody,
-	validateGetBoardId,
+	validateSignup,
+	validateLogin,
+	validateBoardID,
+	validateCreateBoard,
 	validateUpdateBoard,
-	validateCardId,
-	validateBoardIdBody,
-	validateGetCard,
-	validateCreateCardBody,
-	validateUpdateCardBody,
+	validateGetCards,
+	validateCardID,
+	validateCreateCard,
+	validateUpdateCard,
 };

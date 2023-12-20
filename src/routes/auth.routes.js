@@ -1,13 +1,10 @@
 import { Router } from "express";
 
 import {
-	validateLoginBody,
-	validateSignupBody,
+	validateLogin,
+	validateSignup,
 } from "../middlewares/validateFields.js";
-import {
-	validateRefreshToken,
-	validateAccessToken,
-} from "../middlewares/validateTokens.js";
+import { validateRefreshToken } from "../middlewares/validateTokens.js";
 import {
 	login,
 	signup,
@@ -17,13 +14,9 @@ import {
 
 const router = Router();
 
-router.post("/signup", validateSignupBody, signup);
+router.post("/signup", validateSignup, signup);
 
-router.post("/login", validateLoginBody, login);
-
-router.get("/protected", validateAccessToken, (req, res) =>
-	res.json({ protected: true })
-);
+router.post("/login", validateLogin, login);
 
 router.get("/refresh-token", validateRefreshToken, refreshToken);
 

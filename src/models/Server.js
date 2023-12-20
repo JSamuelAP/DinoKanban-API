@@ -5,7 +5,6 @@ import morgan from "morgan";
 
 import { connectToDB } from "../database/config.js";
 import authRouter from "../routes/auth.routes.js";
-import usersRouter from "../routes/users.routes.js";
 import boardsRouter from "../routes/boards.routes.js";
 import cardsRouter from "../routes/cards.routes.js";
 
@@ -20,7 +19,6 @@ class Server {
 		this.PORT = process.env.PORT || 3000;
 		this.PATHS = {
 			auth: "/api/v1/auth",
-			users: "/api/v1/users",
 			boards: "/api/v1/boards",
 			cards: "/api/v1/cards",
 		};
@@ -49,7 +47,6 @@ class Server {
 
 	setRoutes() {
 		this.app.use(this.PATHS.auth, authRouter);
-		this.app.use(this.PATHS.users, usersRouter);
 		this.app.use(this.PATHS.boards, boardsRouter);
 		this.app.use(this.PATHS.cards, cardsRouter);
 	}

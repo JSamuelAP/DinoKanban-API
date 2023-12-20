@@ -9,8 +9,8 @@ import {
 	deleteBoard,
 } from "../controllers/boards.controller.js";
 import {
-	validateCreateBoardBody,
-	validateGetBoardId,
+	validateBoardID,
+	validateCreateBoard,
 	validateUpdateBoard,
 } from "../middlewares/validateFields.js";
 
@@ -18,12 +18,12 @@ const router = Router();
 
 router.get("/", validateAccessToken, getBoards);
 
-router.get("/:id", validateAccessToken, validateGetBoardId, getBoard);
+router.get("/:id", validateAccessToken, validateBoardID, getBoard);
 
-router.post("/", validateAccessToken, validateCreateBoardBody, createBoard);
+router.post("/", validateAccessToken, validateCreateBoard, createBoard);
 
 router.patch("/:id", validateAccessToken, validateUpdateBoard, updateBoard);
 
-router.delete("/:id", validateAccessToken, validateGetBoardId, deleteBoard);
+router.delete("/:id", validateAccessToken, validateBoardID, deleteBoard);
 
 export default router;
