@@ -38,7 +38,6 @@ const validateAccessToken = async (req, res, next) => {
 		req.uid = uid;
 		next();
 	} catch (error) {
-		console.log(error);
 		return res.status(401).json(formatResponse(401, error?.message));
 	}
 };
@@ -53,7 +52,6 @@ const validateRefreshToken = async (req, res, next) => {
 			token,
 			process.env.JWT_REFRESH_SECRET,
 			(err, decoded) => {
-				console.log(decoded);
 				if (err)
 					throw formatResponse(401, tokenVerificationErrors[err?.message]);
 				else return decoded;
@@ -69,7 +67,6 @@ const validateRefreshToken = async (req, res, next) => {
 		req.uid = uid;
 		next();
 	} catch (error) {
-		console.log(error);
 		return res.status(401).json(formatResponse(401, error?.message));
 	}
 };

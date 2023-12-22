@@ -27,7 +27,6 @@ const signup = async (username, email, password) => {
 		const savedUser = await new User({ username, email, password }).save();
 		return formatResponse(201, "User created successfully", savedUser);
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
@@ -63,7 +62,6 @@ const login = async (email, password) => {
 			});
 		} else throw formatResponse(404, "Invalid email or password");
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
@@ -81,7 +79,6 @@ const refreshToken = async (uid) => {
 			expiresIn,
 		});
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };

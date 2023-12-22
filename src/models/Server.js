@@ -7,6 +7,7 @@ import { connectToDB } from "../database/config.js";
 import authRouter from "../routes/auth.routes.js";
 import boardsRouter from "../routes/boards.routes.js";
 import cardsRouter from "../routes/cards.routes.js";
+import { formatResponse } from "../helpers/formatResponse.js";
 
 /**
  * Class for REST API
@@ -49,6 +50,12 @@ class Server {
 		this.app.use(this.PATHS.auth, authRouter);
 		this.app.use(this.PATHS.boards, boardsRouter);
 		this.app.use(this.PATHS.cards, cardsRouter);
+		this.app.use((req, res, next) => {
+			const { method, url } = req;
+			res
+				.status(404)
+				.json(formatResponse(404, `Error: ${method} ${url} not found`));
+		});
 	}
 
 	/**

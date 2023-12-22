@@ -28,7 +28,6 @@ const getCards = async (boardID, uid) => {
 
 		return formatResponse(200, "Cards found successfully", { cards: lists });
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
@@ -50,7 +49,6 @@ const getCard = async (id, uid) => {
 
 		return formatResponse(200, "Card found successfully", { card });
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
@@ -78,7 +76,6 @@ const createCard = async (uid, card) => {
 		const savedCard = await newCard.save();
 		return formatResponse(201, "Card saved successfully", { card: savedCard });
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
@@ -137,7 +134,6 @@ const updateCard = async (id, uid, card) => {
 			card: updatedCard,
 		});
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
@@ -164,7 +160,6 @@ const deleteCard = async (id, uid) => {
 
 		return formatResponse(200, "Card deleted successfully", { card });
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };

@@ -13,7 +13,6 @@ const getBoards = async (uid) => {
 		const boards = await Board.find({ user: uid, deleted: false });
 		return formatResponse(200, "User boards found successfully", { boards });
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
@@ -31,7 +30,6 @@ const getBoard = async (uid, id) => {
 		if (!board) throw formatResponse(404, "Board not found");
 		return formatResponse(200, "Board found successfully", { board });
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
@@ -51,7 +49,6 @@ const createBoard = async (uid, name) => {
 			board: savedBoard,
 		});
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
@@ -74,7 +71,6 @@ const updateBoard = async (id, uid, name) => {
 		if (!board) throw formatResponse(404, "Board not found");
 		return formatResponse(200, "Board updated successfully", { board });
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
@@ -100,7 +96,6 @@ const deleteBoard = async (uid, id) => {
 
 		return formatResponse(200, "Board deleted successfully", { board });
 	} catch (error) {
-		console.log(error);
 		throw formatResponse(error?.status_code || 500, error?.message);
 	}
 };
