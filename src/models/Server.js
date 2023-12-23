@@ -19,6 +19,7 @@ class Server {
 		this.app = express();
 		this.PORT = process.env.PORT || 3000;
 		this.PATHS = {
+			docs: "/api/v1/",
 			auth: "/api/v1/auth",
 			boards: "/api/v1/boards",
 			cards: "/api/v1/cards",
@@ -47,6 +48,9 @@ class Server {
 	}
 
 	setRoutes() {
+		this.app.use(this.PATHS.docs, (req, res) =>
+			res.redirect("https://documenter.getpostman.com/view/27778436/2s9Ykq7LXn")
+		);
 		this.app.use(this.PATHS.auth, authRouter);
 		this.app.use(this.PATHS.boards, boardsRouter);
 		this.app.use(this.PATHS.cards, cardsRouter);
