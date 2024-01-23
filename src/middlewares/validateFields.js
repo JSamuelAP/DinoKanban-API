@@ -1,4 +1,4 @@
-import { validationResult, body, param } from "express-validator";
+import { validationResult, body, param, query } from "express-validator";
 
 /**
  * Validate if express-validator found errors
@@ -20,15 +20,17 @@ const validateFields = (req, res, next) => {
 
 /**
  * Validate if an ID is mongo ID
- * @param {String} location Location of the key (param or body)
+ * @param {String} location Location of the key (param, query or body)
  * @param {String} key Name of the param or field
- * @returns {ValidationChain} Validation chain of the ID in params or body
+ * @returns {ValidationChain} Validation chain of the ID in params, query or body
  */
 const validateID = (location = "param", key = "id") => {
 	if (location === "param")
 		return param("id", "Invalid param 'id'").isMongoId();
 	else if (location === "body")
 		return body(key, `Invalid key '${key}'`).isMongoId();
+	else if (location === "query")
+		return query(key, `Invalid query param '${key}'`).isMongoId();
 };
 
 // Auth
@@ -106,7 +108,7 @@ const validateUpdateBoard = [
 
 // Cards
 
-const validateGetCards = [validateID("body", "board"), validateFields];
+const validateGetCards = [validateID("query", "board"), validateFields];
 
 const validateCardID = [validateID(), validateFields];
 

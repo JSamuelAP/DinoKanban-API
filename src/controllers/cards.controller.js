@@ -2,7 +2,7 @@ import cardsServices from "../services/cards.services.js";
 
 const getCards = async (req, res) => {
 	const uid = req.uid;
-	const { board } = req.body;
+	const { board } = req.query;
 
 	try {
 		const response = await cardsServices.getCards(board, uid);
@@ -55,7 +55,6 @@ const updateCard = async (req, res) => {
 		});
 		res.status(response.status_code).json(response);
 	} catch (error) {
-		console.log("ERROOOOOOOOOOR", error);
 		res.status(error.status_code).json(error);
 	}
 };
