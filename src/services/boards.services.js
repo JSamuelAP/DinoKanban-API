@@ -1,6 +1,6 @@
-import Board from "../models/Board.js";
-import Card from "../models/Cards.js";
-import { formatResponse } from "../helpers/formatResponse.js";
+import Board from '../models/Board.js';
+import Card from '../models/Cards.js';
+import formatResponse from '../helpers/formatResponse.js';
 
 /**
  * Get all user boards
@@ -9,12 +9,12 @@ import { formatResponse } from "../helpers/formatResponse.js";
  * @async
  */
 const getBoards = async (uid) => {
-	try {
-		const boards = await Board.find({ user: uid, deleted: false });
-		return formatResponse(200, "User boards found successfully", { boards });
-	} catch (error) {
-		throw formatResponse(error?.status_code || 500, error?.message);
-	}
+  try {
+    const boards = await Board.find({ user: uid, deleted: false });
+    return formatResponse(200, 'User boards found successfully', { boards });
+  } catch (error) {
+    throw formatResponse(error?.status_code || 500, error?.message);
+  }
 };
 
 /**
@@ -25,13 +25,13 @@ const getBoards = async (uid) => {
  * @async
  */
 const getBoard = async (uid, id) => {
-	try {
-		const board = await Board.findOne({ user: uid, _id: id, deleted: false });
-		if (!board) throw formatResponse(404, "Board not found");
-		return formatResponse(200, "Board found successfully", { board });
-	} catch (error) {
-		throw formatResponse(error?.status_code || 500, error?.message);
-	}
+  try {
+    const board = await Board.findOne({ user: uid, _id: id, deleted: false });
+    if (!board) throw formatResponse(404, 'Board not found');
+    return formatResponse(200, 'Board found successfully', { board });
+  } catch (error) {
+    throw formatResponse(error?.status_code || 500, error?.message);
+  }
 };
 
 /**
@@ -42,15 +42,15 @@ const getBoard = async (uid, id) => {
  * @async
  */
 const createBoard = async (uid, name) => {
-	try {
-		const newBoard = new Board({ name, user: uid });
-		const savedBoard = await newBoard.save();
-		return formatResponse(201, "Board created successfully", {
-			board: savedBoard,
-		});
-	} catch (error) {
-		throw formatResponse(error?.status_code || 500, error?.message);
-	}
+  try {
+    const newBoard = new Board({ name, user: uid });
+    const savedBoard = await newBoard.save();
+    return formatResponse(201, 'Board created successfully', {
+      board: savedBoard,
+    });
+  } catch (error) {
+    throw formatResponse(error?.status_code || 500, error?.message);
+  }
 };
 
 /**
@@ -62,17 +62,17 @@ const createBoard = async (uid, name) => {
  * @async
  */
 const updateBoard = async (id, uid, name) => {
-	try {
-		const board = await Board.findOneAndUpdate(
-			{ user: uid, _id: id, deleted: false },
-			{ name },
-			{ new: true }
-		);
-		if (!board) throw formatResponse(404, "Board not found");
-		return formatResponse(200, "Board updated successfully", { board });
-	} catch (error) {
-		throw formatResponse(error?.status_code || 500, error?.message);
-	}
+  try {
+    const board = await Board.findOneAndUpdate(
+      { user: uid, _id: id, deleted: false },
+      { name },
+      { new: true },
+    );
+    if (!board) throw formatResponse(404, 'Board not found');
+    return formatResponse(200, 'Board updated successfully', { board });
+  } catch (error) {
+    throw formatResponse(error?.status_code || 500, error?.message);
+  }
 };
 
 /**
@@ -83,21 +83,27 @@ const updateBoard = async (id, uid, name) => {
  * @async
  */
 const deleteBoard = async (uid, id) => {
-	try {
-		const board = await Board.findOneAndUpdate(
-			{ user: uid, _id: id, deleted: false },
-			{ deleted: true },
-			{ new: true }
-		);
-		if (!board) throw formatResponse(404, "Board not found");
+  try {
+    const board = await Board.findOneAndUpdate(
+      { user: uid, _id: id, deleted: false },
+      { deleted: true },
+      { new: true },
+    );
+    if (!board) throw formatResponse(404, 'Board not found');
 
-		// Soft delete for cards
-		await Card.updateMany({ board: id, deleted: false }, { deleted: true });
+    // Soft delete for cards
+    await Card.updateMany({ board: id, deleted: false }, { deleted: true });
 
-		return formatResponse(200, "Board deleted successfully", { board });
-	} catch (error) {
-		throw formatResponse(error?.status_code || 500, error?.message);
-	}
+    return formatResponse(200, 'Board deleted successfully', { board });
+  } catch (error) {
+    throw formatResponse(error?.status_code || 500, error?.message);
+  }
 };
 
-export default { getBoards, getBoard, createBoard, updateBoard, deleteBoard };
+export default {
+  getBoards,
+  getBoard,
+  createBoard,
+  updateBoard,
+  deleteBoard,
+};

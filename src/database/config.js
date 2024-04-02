@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 /**
  * Tries to connect to Mongo database
@@ -6,13 +6,12 @@ import mongoose from "mongoose";
  * @async
  */
 const connectToDB = async () => {
-	try {
-		await mongoose.connect(process.env.MONGODB_URI);
-		console.log("🍃 Connected to database");
-	} catch (error) {
-		console.log("❌ Couldn't connect to database", error);
-		process.exit(1);
-	}
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('🍃 Connected to database');
+  } catch (error) {
+    console.log("❌ Couldn't connect to database", error);
+  }
 };
 
-export { connectToDB };
+export default connectToDB;

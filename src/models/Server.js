@@ -3,14 +3,14 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 
-import { connectToDB } from '../database/config.js';
+import connectToDB from '../database/config.js';
 import authRouter from '../routes/auth.routes.js';
 import boardsRouter from '../routes/boards.routes.js';
 import cardsRouter from '../routes/cards.routes.js';
-import { formatResponse } from '../helpers/formatResponse.js';
+import formatResponse from '../helpers/formatResponse.js';
 
 /**
- * Class for REST API
+ * Class for REST API Server
  *
  * @class Server
  */
@@ -35,8 +35,17 @@ class Server {
   }
 
   setMiddlewares() {
+    const whiteList = [
+      process.env.FRONTEND_DEV_URL,
+      process.env.FRONTEND_PROD_URL,
+      'http://192.168.1.15:5173',
+    ];
     const corsOptions = {
-      origin: [process.env.FRONTEND_DEV_URL, process.env.FRONTEND_PROD_URL],
+      origin(origin, callback) {
+        // console.log(origin);
+        if (whiteList.includes(origin) || !origin) callback(null, true);
+        else callback(new Error('Not allowed by CORS'));
+      },
       credentials: true,
     };
 
@@ -49,12 +58,14 @@ class Server {
 
   setRoutes() {
     this.app.get(this.PATHS.docs, (req, res) =>
-      res.redirect('https://documenter.getpostman.com/view/27778436/2s9Ykq7LXn')
+      res.redirect(
+        'https://documenter.getpostman.com/view/27778436/2s9Ykq7LXn',
+      ),
     );
     this.app.use(this.PATHS.auth, authRouter);
     this.app.use(this.PATHS.boards, boardsRouter);
     this.app.use(this.PATHS.cards, cardsRouter);
-    this.app.use((req, res, next) => {
+    this.app.use((req, res) => {
       const { method, url } = req;
       res
         .status(404)
