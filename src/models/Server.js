@@ -6,7 +6,7 @@ import morgan from 'morgan';
 import connectToDB from '../database/config.js';
 import authRouter from '../routes/auth.routes.js';
 import boardsRouter from '../routes/boards.routes.js';
-import cardsRouter from '../routes/cards.routes.js';
+import tasksRouter from '../routes/tasks.routes.js';
 import formatResponse from '../helpers/formatResponse.js';
 
 /**
@@ -22,7 +22,7 @@ class Server {
       docs: '/api/v1/',
       auth: '/api/v1/auth',
       boards: '/api/v1/boards',
-      cards: '/api/v1/cards',
+      tasks: '/api/v1/tasks',
     };
 
     this.connectDB();
@@ -64,7 +64,7 @@ class Server {
     );
     this.app.use(this.PATHS.auth, authRouter);
     this.app.use(this.PATHS.boards, boardsRouter);
-    this.app.use(this.PATHS.cards, cardsRouter);
+    this.app.use(this.PATHS.tasks, tasksRouter);
     this.app.use((req, res) => {
       const { method, url } = req;
       res

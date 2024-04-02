@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-const cardSchema = new Schema(
+const taskSchema = new Schema(
   {
     title: {
       type: String,
@@ -16,7 +16,7 @@ const cardSchema = new Schema(
       ref: 'Board',
       required: true,
     },
-    list: {
+    status: {
       type: String,
       enum: ['backlog', 'todo', 'doing', 'done'],
       default: 'backlog',
@@ -33,10 +33,10 @@ const cardSchema = new Schema(
   { timestamps: true },
 );
 
-cardSchema.methods.toJSON = function () {
-  const { __v, deleted, ...card } = this.toObject();
-  return card;
+taskSchema.methods.toJSON = function () {
+  const { __v, deleted, ...task } = this.toObject();
+  return task;
 };
 
-const Card = model('Card', cardSchema);
-export default Card;
+const Task = model('Task', taskSchema);
+export default Task;

@@ -111,13 +111,13 @@ const validateUpdateBoard = [
   validateFields,
 ];
 
-// Cards
+// Tasks
 
-const validateGetCards = [validateID('query', 'board'), validateFields];
+const validateGetTasks = [validateID('query', 'board'), validateFields];
 
-const validateCardID = [validateID(), validateFields];
+const validateTaskID = [validateID(), validateFields];
 
-const validateCreateCard = [
+const validateCreateTask = [
   body('title', "Key 'title' is missing or is empty")
     .trim()
     .notEmpty()
@@ -132,7 +132,10 @@ const validateCreateCard = [
     .isLength({ max: 200 })
     .withMessage("Max length for key 'description' is 200 characters"),
   validateID('body', 'board'),
-  body('list', "Key 'list' can only be 'backlog', 'todo', 'doing' or 'done'")
+  body(
+    'status',
+    "Key 'status' can only be 'backlog', 'todo', 'doing' or 'done'",
+  )
     .optional()
     .trim()
     .toLowerCase()
@@ -140,7 +143,7 @@ const validateCreateCard = [
   validateFields,
 ];
 
-const validateUpdateCard = [
+const validateUpdateTask = [
   validateID(),
   body('title', "Key 'title' is empty")
     .optional()
@@ -156,7 +159,10 @@ const validateUpdateCard = [
     .bail()
     .isLength({ max: 200 })
     .withMessage("Max length for key 'description' is 200 characters"),
-  body('list', "Key 'list' can only be 'backlog', 'todo', 'doing' or 'done'")
+  body(
+    'status',
+    "Key 'status' can only be 'backlog', 'todo', 'doing' or 'done'",
+  )
     .optional()
     .trim()
     .toLowerCase()
@@ -173,8 +179,8 @@ export {
   validateBoardID,
   validateCreateBoard,
   validateUpdateBoard,
-  validateGetCards,
-  validateCardID,
-  validateCreateCard,
-  validateUpdateCard,
+  validateGetTasks,
+  validateTaskID,
+  validateCreateTask,
+  validateUpdateTask,
 };

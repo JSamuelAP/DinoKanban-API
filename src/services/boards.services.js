@@ -1,5 +1,5 @@
 import Board from '../models/Board.js';
-import Card from '../models/Cards.js';
+import Task from '../models/Task.js';
 import formatResponse from '../helpers/formatResponse.js';
 
 /**
@@ -91,8 +91,8 @@ const deleteBoard = async (uid, id) => {
     );
     if (!board) throw formatResponse(404, 'Board not found');
 
-    // Soft delete for cards
-    await Card.updateMany({ board: id, deleted: false }, { deleted: true });
+    // Soft delete for tasks
+    await Task.updateMany({ board: id, deleted: false }, { deleted: true });
 
     return formatResponse(200, 'Board deleted successfully', { board });
   } catch (error) {

@@ -1,39 +1,39 @@
-import cardsServices from '../services/cards.services.js';
+import tasksServices from '../services/tasks.services.js';
 
-const getCards = async (req, res) => {
+const getTasks = async (req, res) => {
   const { uid } = req;
   const { board } = req.query;
 
   try {
-    const response = await cardsServices.getCards(board, uid);
+    const response = await tasksServices.getTasks(board, uid);
     res.status(response.status_code).json(response);
   } catch (error) {
     res.status(error.status_code).json(error);
   }
 };
 
-const getCard = async (req, res) => {
+const getTask = async (req, res) => {
   const { uid } = req;
   const { id } = req.params;
 
   try {
-    const response = await cardsServices.getCard(id, uid);
+    const response = await tasksServices.getTask(id, uid);
     res.status(response.status_code).json(response);
   } catch (error) {
     res.status(error.status_code).json(error);
   }
 };
 
-const createCard = async (req, res) => {
+const createTask = async (req, res) => {
   const { uid } = req;
-  const { title, description, board, list } = req.body;
+  const { title, description, board, status } = req.body;
 
   try {
-    const response = await cardsServices.createCard(uid, {
+    const response = await tasksServices.createTask(uid, {
       title,
       description,
       board,
-      list,
+      status,
     });
     res.status(response.status_code).json(response);
   } catch (error) {
@@ -41,16 +41,16 @@ const createCard = async (req, res) => {
   }
 };
 
-const updateCard = async (req, res) => {
+const updateTask = async (req, res) => {
   const { uid } = req;
   const { id } = req.params;
-  const { title, description, list, order } = req.body;
+  const { title, description, status, order } = req.body;
 
   try {
-    const response = await cardsServices.updateCard(id, uid, {
+    const response = await tasksServices.updateTask(id, uid, {
       title,
       description,
-      list,
+      status,
       order,
     });
     res.status(response.status_code).json(response);
@@ -59,16 +59,16 @@ const updateCard = async (req, res) => {
   }
 };
 
-const deleteCard = async (req, res) => {
+const deleteTask = async (req, res) => {
   const { uid } = req;
   const { id } = req.params;
 
   try {
-    const response = await cardsServices.deleteCard(id, uid);
+    const response = await tasksServices.deleteTask(id, uid);
     res.status(response.status_code).json(response);
   } catch (error) {
     res.status(error.status_code).json(error);
   }
 };
 
-export { getCards, getCard, createCard, updateCard, deleteCard };
+export { getTasks, getTask, createTask, updateTask, deleteTask };
