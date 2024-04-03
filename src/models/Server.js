@@ -19,10 +19,10 @@ class Server {
     this.app = express();
     this.PORT = process.env.PORT || 3000;
     this.PATHS = {
-      docs: '/api/v1/',
-      auth: '/api/v1/auth',
-      boards: '/api/v1/boards',
-      tasks: '/api/v1/tasks',
+      docs: '/api/v2/',
+      auth: '/api/v2/auth',
+      boards: '/api/v2/boards',
+      tasks: '/api/v2/tasks',
     };
 
     this.connectDB();
