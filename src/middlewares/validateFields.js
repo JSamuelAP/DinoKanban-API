@@ -167,7 +167,7 @@ const validateUpdateTask = [
     .trim()
     .toLowerCase()
     .isIn(['backlog', 'todo', 'doing', 'done']),
-  body('order', "Key 'order' must be a positive integer")
+  body('destination', "Key 'destination' must be a positive integer")
     .optional()
     .isInt({ min: 1, allow_leading_zeroes: false }),
   validateFields,

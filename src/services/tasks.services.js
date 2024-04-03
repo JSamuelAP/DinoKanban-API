@@ -4,15 +4,16 @@ import formatResponse from '../helpers/formatResponse.js';
 
 /**
  * Get next task order in a status
- * @param {Object} task Task with board and status info
+ * @param {string} board Board ID
+ * @param {string} status Status name
  * @returns {Promise<Number>} Promise with next order or error
  * @async
  */
-const getNextOrder = async (task) =>
+const getNextOrder = async (board, status) =>
   new Promise((resolve, reject) => {
     Task.find({
-      board: task.board,
-      status: task?.status || 'backlog',
+      board,
+      status: status || 'backlog',
       deleted: false,
     })
       .sort({ order: -1 })
@@ -38,9 +39,9 @@ const moveTasks = async (task, range, direction) => {
     order: range,
     deleted: false,
   });
-  tasks.forEach(async (c) => {
-    c.order += direction;
-    await c.save();
+  tasks.forEach(async (t) => {
+    t.order += direction;
+    await t.save();
   });
 };
 
@@ -108,7 +109,7 @@ const createTask = async (uid, task) => {
     if (!board.success) throw board;
 
     // calculate next order
-    task.order = await getNextOrder(task)
+    task.order = await getNextOrder(board.id, task.status)
       .then((order) => order)
       .catch((error) => {
         throw error;
@@ -123,7 +124,68 @@ const createTask = async (uid, task) => {
 };
 
 /**
- * Update a task by ID. If order and/or status is changed, update order of affected tasks too
+ * Update the order of a task and affected task in it status and/or destination status.
+ * Also update the new satus if specified.
+ * @param {Object} task Task to update
+ * @param {Number} destination New order for the task
+ * @param {String|null} status New status for the task
+ * @return Updated task or error object
+ * @async
+ */
+const updateTaskOrder = async (task, destination, status) => {
+  const source = task.order;
+
+  try {
+    if (status && status !== task.status) {
+      // Move task to a other status
+
+      // -1 order in tasks with greater than order source in origin status
+      await moveTasks(task, { $gt: source }, -1);
+
+      if (destination) {
+        // Order destination specified
+
+        // +1 order in tasks with greater than or equal order in destination status
+        task.status = status;
+        await moveTasks(task, { $gte: destination }, 1);
+      } else {
+        // Order no specified, move to last position
+
+        destination = await getNextOrder(task.board, status)
+          .then((order) => order)
+          .catch((error) => {
+            throw error;
+          });
+      }
+    } else {
+      // Moved to a different position inside same status
+
+      const direction = destination < source ? 'up' : 'down';
+      if (direction === 'up')
+        await moveTasks(task, { $gte: destination, $lt: source }, 1);
+      else if (task === 'down')
+        await moveTasks(task, { $gt: source, $lte: destination }, -1);
+    }
+
+    // Just update the new order and status
+    const updatedTask = await Task.findOneAndUpdate(
+      { _id: task.id },
+      {
+        order: destination,
+        status,
+      },
+      {
+        new: true,
+      },
+    );
+    return updatedTask;
+  } catch (error) {
+    throw formatResponse(error?.status_code || 500, error?.message);
+  }
+};
+
+/**
+ * Update a task by ID
  * @param {String} id Task ID
  * @param {String} uid User ID
  * @param {Object} task Task changes
@@ -135,41 +197,11 @@ const updateTask = async (id, uid, task) => {
     const existsTask = await getTask(id, uid);
     if (!existsTask.success) throw existsTask;
     const taskToUpdate = existsTask.data.task;
-    task.board = taskToUpdate.board;
 
-    // Moved to a different status
-    if (task.status && task.status !== taskToUpdate.status) {
-      if (task.order) {
-        // -1 order in tasks with greater than order in origin status
-        await moveTasks(
-          { ...task, status: taskToUpdate.status },
-          { $gt: task.order },
-          -1,
-        );
-        // +1 order in tasks with greater than or equal order in destination status
-        await moveTasks(task, { $gte: task.order }, 1);
-      } else {
-        task.order = await getNextOrder(task)
-          .then((order) => order)
-          .catch((error) => {
-            throw error;
-          });
-      }
-    } else if (task.order) {
-      // Moved to a different position inside same status
-      task.status = taskToUpdate.status;
-      // Move to a higher position
-      if (task.order < taskToUpdate.order) {
-        await moveTasks(task, { $gte: task.order, $lt: taskToUpdate.order }, 1);
-      }
-      // Move to a lower position
-      else if (task.order > taskToUpdate.order) {
-        await moveTasks(
-          task,
-          { $gt: taskToUpdate.order, $lte: task.order },
-          -1,
-        );
-      }
+    if (task.destination || task.status) {
+      await updateTaskOrder(taskToUpdate, task.destination, task.status);
+      delete task.destination;
+      delete task.status;
     }
 
     const updatedTask = await Task.findOneAndUpdate({ _id: id }, task, {

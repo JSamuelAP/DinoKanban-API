@@ -44,14 +44,14 @@ const createTask = async (req, res) => {
 const updateTask = async (req, res) => {
   const { uid } = req;
   const { id } = req.params;
-  const { title, description, status, order } = req.body;
+  const { title, description, destination, status } = req.body;
 
   try {
     const response = await tasksServices.updateTask(id, uid, {
       title,
       description,
+      destination,
       status,
-      order,
     });
     res.status(response.status_code).json(response);
   } catch (error) {
