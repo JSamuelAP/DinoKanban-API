@@ -2,7 +2,7 @@
   "name": "backend",
   "description": "REST API for my project: DinoKanban",
   "author": "JSamuel <sp4619168@gmail.com> (http://jsamuelap.github.io/)",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "license": "ISC",
   "keywords": [
     "API",

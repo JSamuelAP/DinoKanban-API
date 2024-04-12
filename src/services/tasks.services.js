@@ -109,7 +109,7 @@ const createTask = async (uid, task) => {
     if (!board.success) throw board;
 
     // calculate next order
-    task.order = await getNextOrder(board.id, task.status)
+    task.order = await getNextOrder(board.data.board.id, task.status)
       .then((order) => order)
       .catch((error) => {
         throw error;
@@ -163,7 +163,7 @@ const updateTaskOrder = async (task, destination, status) => {
       const direction = destination < source ? 'up' : 'down';
       if (direction === 'up')
         await moveTasks(task, { $gte: destination, $lt: source }, 1);
-      else if (task === 'down')
+      else if (direction === 'down')
         await moveTasks(task, { $gt: source, $lte: destination }, -1);
     }
 
@@ -228,12 +228,13 @@ const deleteTask = async (id, uid) => {
     if (!existsTask.success) throw existsTask;
 
     const { task } = existsTask.data;
-    task.deleted = true;
-    task.order = 0;
-    task.save();
 
     // -1 order in tasks with greather order
     await moveTasks(task, { $gt: task.order }, -1);
+
+    task.deleted = true;
+    task.order = 0;
+    task.save();
 
     return formatResponse(200, 'Task deleted successfully', { task });
   } catch (error) {
