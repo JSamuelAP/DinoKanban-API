@@ -38,11 +38,10 @@ class Server {
     const whiteList = [
       process.env.FRONTEND_DEV_URL,
       process.env.FRONTEND_PROD_URL,
-      'http://192.168.1.15:5173',
     ];
     const corsOptions = {
       origin(origin, callback) {
-        // console.log(origin);
+        console.log(origin);
         if (whiteList.includes(origin) || !origin) callback(null, true);
         else callback(new Error('Not allowed by CORS'));
       },
